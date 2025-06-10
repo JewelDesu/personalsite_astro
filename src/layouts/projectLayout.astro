@@ -1,0 +1,63 @@
+---
+import Layout from '$layouts/Layout.astro';
+import Buttons from '~/components/buttons.astro';
+import Footer from '~/components/footer.astro';
+
+interface Props {
+  id?: string;
+
+  title: string;
+  description: string;
+  draft?: boolean;
+  created: string | Date;
+  modified?: string | Date;
+  tags: any[];
+  minutesRead?: string;
+
+  comments?: boolean;
+}
+
+const { id, title, description, draft } =
+  Astro.props;
+
+const backlinkPath = Astro.url.pathname.replace('/article', '');
+---
+
+<Layout>
+  {
+    draft && (
+      <div class="flex flex-col gap-1 border-2 border-ctp-pink p-3">
+        <div class="flex flex-row gap-x-1 font-bold">
+          <h1>Warning</h1>
+        </div>
+
+        <span>This article is a draft and is not ready for public viewing.</span>
+      </div>
+    )
+  }
+
+  <header class="flex flex-col">
+  </header>
+
+		<main>
+			<div>
+				<div id="top-grid">
+					<div id="top-legend">
+							<legend style="font-size: 30px;">
+								Projects
+							</legend>
+						</div>
+
+						<Buttons />
+					</div>
+        <h1 class="text-4xl font-semibold">{title}</h1>
+        <p>{description}</p>
+        <fieldset id="fieldset1">
+          <slot />
+        </fieldset>
+			</div>			
+			</main>
+			<footer>
+				<Footer />
+			</footer>
+</Layout>

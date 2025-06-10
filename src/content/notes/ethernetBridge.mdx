@@ -1,0 +1,76 @@
+---
+title: "Ethernet bridge setup (for stm32mp1)"
+description: "Simple script that sets up and enable ethernet bridge DHCP"
+---
+
+# Enabling network bridge with single run script
+
+**Refferences:**  
+[ArchWiki](https://wiki.archlinux.org/title/Systemd-networkd#Bridge_interface) 
+
+---
+
+Network bridge setup script tested on stm32mp1 board with additional ethernet ports.
+
+Will work on any systemd linux systems.
+
+
+
+Create a bash file in directory of choice
+<pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp1:~#</span><span class="command"> touch AUTO_BRIDGE.sh</span></code></pre>
+
+
+
+Paste in the following script:
+```bash
+#!/bin/bash
+
+# Check if script is run as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Please run as root"
+    exit 1
+fi
+
+# Variables
+
+INTERFACE_FILE = "/etc/systemd/network/25-br0.netdev"
+BIND_FILE = "/etc/systemd/network/25-br0-en.network"
+BRIDGE_FILE = "/etc/systemd/network/25-br0.network"
+
+#touch "$INTERFACE_FILE"
+#touch "$BIND_FILE"
+#touch "$BRIDGE_FILE"
+
+cat > "$INTERFACE_FILE" << EOL
+[NetDev]
+Name=br0
+Kind=bridge
+EOL
+
+
+cat > "$BIND_FILE" << EOL
+[Match]
+Name=lan*
+
+[Network]
+Bridge=br0
+EOL
+
+cat > "$BRIDGE_FILE" << EOL
+[Match]
+Name=br0
+
+[Link]
+RequiredForOnline=routable
+
+[Network]
+DHCP=yes
+EOL
+
+echo "Bridge creation successful"
+```
+
+Lastly the permissions need to be changed for the script file so it would be executable, run the following command to do sudo
+<pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp1:~#</span><span class="command"> chmod +x AUTO_BRIDGE.sh</span></code></pre>
+
+Script is ready to be executed by running `./AUTO_BRIDGE.sh`

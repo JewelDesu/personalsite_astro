@@ -1,0 +1,48 @@
+---
+import ButtonLink from "./buttonLink.astro";
+
+interface Link {
+  href: string;
+  text: string;
+  currentpage: string;
+}
+
+const links = [
+  { href: '/', text: 'Home', currentpage: 'Home'},
+  { href: '/projects', text: 'Projects', currentpage: 'Projects'},
+  { href: '/notes', text: 'Notes', currentpage: 'Notes'},
+] satisfies Link[];
+---
+<section>
+        <div id="mainbuttons">
+            {
+            links.map(({ href, text }) => {
+                return <ButtonLink {href} {text} class="links" />;
+            })
+            }
+		    <label class="theme-switch" for="checkbox">
+		        <input type="checkbox" id="checkbox" />
+		        <div class="slider round"></div>
+		    </label>
+	    </div>		
+</section>
+
+<script>
+const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+const currentTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', currentTheme);
+toggleSwitch.checked = currentTheme === 'dark';
+
+function switchTheme(e) {
+    if (e.target.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+toggleSwitch.addEventListener('change', switchTheme, false);
+</script>

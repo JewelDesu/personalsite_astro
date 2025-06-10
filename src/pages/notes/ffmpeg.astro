@@ -1,0 +1,99 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import '../../assets/post.css';
+import Footer from '../../components/footer.astro';
+
+---
+
+<Layout>
+    <body>
+        <main>
+            <div>
+            <div id="mainbuttons">
+                <a class="links" href="/">home</a>
+                <a class="links" href="../projects/projects">projects</a>
+                <a class="links" href="../notes/notes">notes</a>
+
+                <label class="theme-switch" for="checkbox">
+                    <input type="checkbox" id="checkbox" />
+                    <div class="slider round"></div>
+                </label>
+					
+	        </div>
+            <h1>
+                Installing precompiled FFMPEG with all plugins enabled
+            </h1>
+            <p>For those that are too busy (or too lazy) to compile it themselves because the version that comes from package managers has plugins disabled</p>
+            <div class="post">
+                <div class="table">
+                    <div class="tags">Refferences:</div>
+                    <div class="tags value">
+                        <a href="https://johnvansickle.com/ffmpeg" title="view all posts with this tag">johnvansickle</a>
+                    </div>
+                </div>
+                <a href="./notes">back to home</a>
+            </div>
+            <hr />
+            <p>In this example i am working with STM32MP157x</p>
+            <h1><a aria-hidden="true" class="anchor"></a>FFMPEG lazy mode</h1>
+            <p>Before instalation check your machenes architecture <code>dpkg --print-architecture</code></p>
+            <pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp2:~#</span><span class="command"> dpkg --print-architecture</span>
+    <span class="hosttext">arm64</span></code></pre>
+    
+            <p>Now sellect youre spice accordingly to your architecture</p>
+            <pre class="codecontainer"><code class="language-ini"><span class="code">amd64: </span><span class="command">ffmpeg-git-amd64-static.tar.xz</span>
+    <span class="code">i686: </span><span class="command">ffmpeg-git-i686-static.tar.xz</span>
+    <span class="code">arm64: </span><span class="command">ffmpeg-git-arm64-static.tar.xz</span>
+    <span class="code">armhf: </span><span class="command">ffmpeg-git-armhf-static.tar.xz</span>
+    <span class="code">armel: </span><span class="command">ffmpeg-git-armel-static.tar.xz
+    </span></code></pre>
+    
+            <p>Download the compressed file <code>wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz</code></p>
+            <pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp2:~#</span><span class="command"> wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz
+    
+    </span><span class="hosttext">--2025-01-14 17:51:57--  https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz
+    </span><span class="hosttext">Resolving johnvansickle.com... 107.180.57.212
+    </span><span class="hosttext">Connecting to johnvansickle.com|107.180.57.212|:443... connected.
+    </span><span class="hosttext">HTTP request sent, awaiting response... 200 OK
+    </span><span class="hosttext">ALength: 19400492 (19M) [application/x-xz]
+    </span><span class="hosttext">Saving to: 'ffmpeg-git-arm64-static.tar.xz'
+    </span><span class="hosttext">
+    </span><span class="hosttext">ffmpeg-git-arm64-static.tar.x 100%[=================================================>]  18.50M   111KB/s    in 5m 59s
+    </span><span class="hosttext">
+    </span><span class="hosttext">2025-01-14 17:57:57 (52.7 KB/s) - 'ffmpeg-git-arm64-static.tar.xz' saved [19400492/19400492]
+    </span></code></pre>
+    
+    <p>Extract the tarball <code>tar xvf ffmpeg-git-arm64-static.tar.xz</code> When the process finishes FFMPEG is ready for use, just open the directory <code>cd ffmpeg-git-20240629-arm64-static</code> and run <code>./ffmpeg -v</code></p>
+    
+    <h3>Making FFMPEG run globally</h3>
+    <p style="margin-bottom: 2em;">One advantage of this is its going to be accesible from anywhere like any other program. Right now to run FFMPEG you need to run it in the original directory</p>
+    
+    <p>To enable FFMPEG globally run <code>sudo mv ffmpeg-git-20240629-arm64-static/ffmpeg ffmpeg-git-20240629-arm64-static/ffprobe /usr/bin/</code> outside of the directory</p>
+            <pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp2:~#</span><span class="command"> sudo mv ffmpeg-git-20240629-arm64-static/ffmpeg ffmpeg-git-20240629-arm64-static/ffprobe /usr/bin/</span></code></pre>
+    <p>And that it you can freely use ffmpeg yippee</p>
+</div>
+</main>
+			<footer>
+				<Footer />
+			</footer>
+    </body>
+    <script>
+            const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+
+            const currentTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            toggleSwitch.checked = currentTheme === 'dark';
+
+            function switchTheme(e) {
+                if (e.target.checked) {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                }
+            }
+
+            toggleSwitch.addEventListener('change', switchTheme, false);
+    </script>
+</Layout>

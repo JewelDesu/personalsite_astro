@@ -1,0 +1,31 @@
+---
+import Buttons from '../components/buttons.astro';
+import AboutMe from '../components/aboutMe.astro';
+import Contact from '../components/contact.astro';
+import Welcome from '../components/Welcome.astro';
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/footer.astro';
+import Hardware from '~/components/hardware.astro';
+
+---
+
+<Layout>
+		<main>
+			<div>
+				<div id="top-grid">
+					<div id="top-legend">
+							<legend style="font-size: 30px;">
+								Home
+							</legend>
+						</div>
+						<Buttons />
+					</div>
+				<AboutMe />
+				<Hardware />
+				<Contact />
+			</div>			
+			</main>
+			<footer>
+				<Footer />
+			</footer>
+</Layout>

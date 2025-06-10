@@ -1,0 +1,24 @@
+---
+
+const { page } = Astro.props;
+---
+
+{
+  page.url.next && (
+    <div class="flex flex-row-reverse pt-2">
+      <a href={page.url.next} title="More projects">
+        More notes
+      </a>
+    </div>
+  )
+}
+
+{
+  page.url.prev && (
+    <div class="flex pt-2">
+      <a href={page.url.prev} title="Go back">
+        Go back
+      </a>
+    </div>
+  )
+}

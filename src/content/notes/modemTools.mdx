@@ -1,0 +1,74 @@
+---
+title: "GSM Modem setup (for stm32mp1)"
+description: "Simple scripts that set up and enable GSM modem tools"
+---
+
+# Enabling GSM modem with single run scripts
+
+For those that are too busy (or too lazy) to compile it themselves because the version that comes from package managers has plugins disabled
+
+**Refferences:**  
+[]() 
+
+---
+
+GSM modem setup script tested on stm32mp1 board with external GSM modem module.
+
+Needs testing on other boards/systems.
+
+
+
+
+
+It requires 2 different scripts.
+Create two bash files in directory of choice
+<pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp1:</span><span class="code">"'~#'"</span>  <span class="command">touch install.sh</span>
+        <span class="code">root@stm32mp1:~#</span><span class="command"> touch install-service.sh</span></code></pre>
+
+
+First open `install.sh` bash file and paste the following script:
+```bash
+#!/bin/bash
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run as root"
+  exit 1
+fi
+
+# Create directories if they don't exist
+mkdir -p /usr/local/bin
+#mkdir -p /etc/udev/rules.d
+apt-get update & apt-get install ppp
+
+# Copy files to their respective locations
+
+cp connman /usr/local/bin/
+cp qmi-network-raw /usr/local/bin/
+cp modemstat /usr/local/bin/
+cp softresetmodem.sh /usr/local/bin
+cp sim.conf /etc/
+cp qmi-network.conf /etc/
+cp 20-modem-7xxx.rules /etc/udev/rules.d/
+cp 22-modem-7xxx.rules /etc/udev/rules.d/
+
+# Set correct permissions
+chmod 755 /usr/local/bin/connman
+chmod 755 /usr/local/bin/qmi-network-raw
+chmod 755 /usr/local/bin/modemstat
+chmod 755 /usr/local/bin/softresetmodem.sh
+chmod 644 /etc/sim.conf
+chmod 644 /etc/qmi-network.conf
+chmod 644 /etc/udev/rules.d/20-modem-7xxx.rules
+chmod 644 /etc/udev/rules.d/22-modem-7xxx.rules
+
+# Reload udev rules
+udevadm control --reload-rules
+
+echo "Installation completed successfully."
+```
+
+Lastly the permissions need to be changed for the script file so it would be executable, run the following command to do sudo
+<pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp1:~#</span><span class="command"> chmod +x AUTO_BRIDGE.sh</span></code></pre>
+
+Script is ready to be executed by running `./AUTO_BRIDGE.sh`

@@ -1,0 +1,21 @@
+---
+import Layout from '$layouts/Layout.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<Layout {description} pageTitle={title} title={`${title} | Sapphic Angels`}>
+  <header class="flex flex-col">
+    <h1 class="py-2 text-4xl font-semibold">{title}</h1>
+    <p>{description}</p>
+  </header>
+
+  <section class="article-content prose pt-10 dark:prose-invert">
+    <slot />
+  </section>
+</Layout>

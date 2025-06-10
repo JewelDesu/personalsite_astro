@@ -1,0 +1,52 @@
+---
+import MarkdownLayout from '$layouts/Markdown.astro';
+import Layout from '~/layouts/Layout.astro';
+import '../assets/post.css';
+import type { GetStaticPaths } from 'astro';
+import { getCollection, type CollectionEntry, getEntry, render } from 'astro:content';
+import Footer from '~/components/footer.astro';
+import Buttons from '~/components/buttons.astro';
+
+interface Props {
+  info: CollectionEntry<'notes'>;
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const entries = await getCollection('notes');
+
+  return entries.map((info) => ({
+    params: { id: info.id },
+    props: { info },
+  }));
+};
+
+const { info } = Astro.props;
+const entry = await getEntry('notes', info.id!)!;
+
+const { Content } = await render(entry);
+---
+
+
+
+<Layout>
+    <body>
+        <main>
+            <div>
+            				<div id="top-grid">
+					<div id="top-legend">
+							<legend style="font-size: 30px;">
+								Home
+							</legend>
+						</div>
+						<Buttons />
+					</div>
+            <MarkdownLayout {...info.data}>
+  <Content />
+</MarkdownLayout>
+</div>
+</main>
+			<footer>
+				<Footer />
+			</footer>
+    </body>
+</Layout>

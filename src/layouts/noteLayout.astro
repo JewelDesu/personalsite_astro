@@ -1,0 +1,50 @@
+---
+import Layout from '$layouts/Layout.astro';
+
+interface Props {
+  id?: string;
+
+  title: string;
+  description: string;
+  draft?: boolean;
+  created: string | Date;
+  modified?: string | Date;
+  tags: any[];
+  minutesRead?: string;
+
+  comments?: boolean;
+}
+
+const { id, title, description, draft } =
+  Astro.props;
+
+const backlinkPath = Astro.url.pathname.replace('/article', '');
+
+---
+
+<Layout>
+  {
+    draft && (
+      <div class="flex flex-col gap-1 border-2 border-ctp-pink p-3">
+        <div class="flex flex-row gap-x-1 font-bold">
+          <h1>Warning</h1>
+        </div>
+
+        <span>This article is a draft and is not ready for public viewing.</span>
+      </div>
+    )
+  }
+
+  <header class="flex flex-col">
+    <div class="flex flex-col gap-2 pb-2">
+      <h1><a aria-hidden="true" class="anchor"></a>{title}</h1>
+    </div>
+
+    <div class="flex flex-col pt-1">
+    </div>
+  </header>
+
+  <section class="article-content prose break-words pt-10 dark:prose-invert">
+    <slot />
+  </section>
+</Layout>

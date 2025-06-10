@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import '../assets/post.css';
+import NoteBox from '../components/projects/note.astro';
+
+import { type CollectionEntry, render, getEntry } from 'astro:content';
+interface Props {
+  notes: CollectionEntry<'notes'>[];
+}
+
+const { notes } = Astro.props;
+---
+
+<Layout>
+    <p>Usefull notes i take while working on my projects. Might also be interesting for you</p>
+  {
+    notes    
+      .map(async ({ data,id }) => {
+        const entry = await getEntry('notes', id!)!;
+        return <NoteBox {data} {id}  />;
+      })
+  }
+          <slot />
+</Layout>

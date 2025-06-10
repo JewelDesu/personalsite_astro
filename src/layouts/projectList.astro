@@ -1,0 +1,33 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+import ProjBox from '../components/projects/proj.astro';
+
+import { type CollectionEntry, render, getEntry } from 'astro:content';
+interface Props {
+  articles: CollectionEntry<'articles'>[];
+}
+
+const { articles } = Astro.props;
+---
+
+<Layout>
+    <p>
+					Silly little projects ive been working on
+		</p>
+
+  {
+    articles    
+      .map(async ({ data, id }) => {
+        const entry = await getEntry('articles', id!)!;
+
+        const {
+          remarkPluginFrontmatter: { minutesRead },
+        } = await render(entry);
+
+        return <ProjBox {data} {id} {minutesRead} />;
+      })
+  }
+
+  <slot />
+</Layout>

@@ -1,0 +1,62 @@
+---
+title: "Pre compiled FFMPEG instalation"
+description: "For those that are too busy (or too lazy) to compile it themselves because the version that comes from package managers has plugins disabled"
+---
+
+# Installing precompiled FFMPEG with all plugins enabled
+
+For those that are too busy (or too lazy) to compile it themselves because the version that comes from package managers has plugins disabled
+
+**Refferences:**  
+[johnvansickle](https://johnvansickle.com/ffmpeg)  
+[back to home](./notes)
+
+---
+
+In this example i am working with STM32MP157x
+
+<h2><a aria-hidden="true" class="anchor"></a>FFMPEG lazy mode</h2>
+
+Before instalation check your machenes architecture `dpkg --print-architecture`
+
+<pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp2:~#</span><span class="command"> dpkg --print-architecture</span>
+        <span class="hosttext">     arm64</span></code></pre>
+
+Now sellect youre spice accordingly to your architecture
+
+            <pre class="codecontainer"><code class="language-ini"><span class="code">amd64: </span><span class="command">ffmpeg-git-amd64-static.tar.xz</span>
+    <span class="code">i686:  </span><span class="command">ffmpeg-git-i686-static.tar.xz</span>
+    <span class="code">arm64: </span><span class="command">ffmpeg-git-arm64-static.tar.xz</span>
+    <span class="code">armhf: </span><span class="command">ffmpeg-git-armhf-static.tar.xz</span>
+    <span class="code">armel: </span><span class="command">ffmpeg-git-armel-static.tar.xz</span></code></pre>
+ 
+
+
+Download the compressed file `wget https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz`
+
+            <pre class="codecontainer"><code class="language-ini"><span class="code">root@stm32mp2:~# </span><span className="command">wget {"https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz"}</span>         
+    <span class="hosttext">     --2025-01-14 17:51:57--  {"https://johnvansickle.com/ffmpeg/builds/ffmpeg-git-arm64-static.tar.xz"}</span>
+    <span class="hosttext">     Resolving johnvansickle.com... 107.180.57.212</span>
+    <span class="hosttext">     Connecting to johnvansickle.com|107.180.57.212|:443... connected.</span>
+    <span class="hosttext">     HTTP request sent, awaiting response... 200 OK</span>
+    <span class="hosttext">     ALength: 19400492 (19M) [application/x-xz]</span>
+    <span class="hosttext">     Saving to: 'ffmpeg-git-arm64-static.tar.xz'</span><span class="hosttext"></span>
+    <span class="hosttext">s </span>
+    <span class="hosttext">     ffmpeg-git-arm64-static.tar.x 100%[=================================================>]  18.50M   111KB/s    in 5m 59s</span><span class="hosttext"></span>
+    <span class="hosttext">s </span>
+    <span class="hosttext">     2025-01-14 17:57:57 (52.7 KB/s) - 'ffmpeg-git-arm64-static.tar.xz' saved [19400492/19400492]</span></code></pre>
+    
+
+Extract the tarball `tar xvf ffmpeg-git-arm64-static.tar.xz` When the process finishes FFMPEG is ready for use, just open the directory `cd ffmpeg-git-20240629-arm64-static` and run `./ffmpeg -v`
+
+### Making FFMPEG run globally
+
+One advantage of this is its going to be accesible from anywhere like any other program. Right now to run FFMPEG you need to run it in the original directory
+
+To enable FFMPEG globally run `sudo mv ffmpeg-git-20240629-arm64-static/ffmpeg ffmpeg-git-20240629-arm64-static/ffprobe /usr/bin/` outside of the directory
+
+```bash
+root@stm32mp2:~# sudo mv ffmpeg-git-20240629-arm64-static/ffmpeg ffmpeg-git-20240629-arm64-static/ffprobe /usr/bin/
+```
+
+And that it you can freely use ffmpeg yippee

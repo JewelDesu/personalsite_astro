@@ -1,0 +1,22 @@
+
+<section>
+	    <div id="top-grid">
+		    <a id="loadTimeDisplay" style="display: flex; justify-content: left"> </a> 
+		    Vilius Ch
+		</div>
+    <script>
+        window.addEventListener('load', () => {
+        setTimeout(() => {
+            const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+
+            if (nav && nav.loadEventEnd > 0) {
+            const loadTime = (nav.loadEventEnd - nav.startTime)/1000;
+            console.log(`Page loaded in ${loadTime.toFixed(2)} ms`);
+            document.getElementById('loadTimeDisplay').textContent = 'Page loaded in ' + loadTime.toFixed(2) + ' s';
+            } else {
+            console.warn('Navigation timing not available or not recorded yet.');
+            }
+        }, 0); 
+        });
+	</script>
+</section>
