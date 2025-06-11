@@ -30,17 +30,17 @@ const links = [
 <script>
 const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
 
-const currentTheme = localStorage.getItem('theme') || 'light';
+const currentTheme = localStorage.getItem('theme') || 'dark';
 document.documentElement.setAttribute('data-theme', currentTheme);
-toggleSwitch.checked = currentTheme === 'dark';
+toggleSwitch.checked = currentTheme === 'light';
 
 function switchTheme(e) {
     if (e.target.checked) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        localStorage.setItem('theme', 'dark');
-    } else {
         document.documentElement.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
     }
 }
 

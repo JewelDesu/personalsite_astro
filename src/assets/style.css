@@ -3,15 +3,6 @@ body {
 }
 
 :root {
-	--base: #181818;
-    --back: #2e2e2e;
-	--text: #ffffff;
-	--surface0: #6e6e6e;
-	--active: #86778b;
-	--hover:var(--text);
-	--currentpage: #86778b;
-}
-[data-theme="dark"] {
 	--base: #bbbbbb;
     --back: #ffffff;
 	--text: #000000;
@@ -19,6 +10,15 @@ body {
 	--active: #6f5079;
 	--hover:var(--text);
 	--currentpage: #6f5079;
+}
+[data-theme="light"] {
+	--base: #181818;
+    --back: #2e2e2e;
+	--text: #ffffff;
+	--surface0: #6e6e6e;
+	--active: #86778b;
+	--hover:var(--text);
+	--currentpage: #86778b;
 }
 @font-face {
 	font-family: "mononoki";
@@ -124,6 +124,24 @@ a.links:hover {
 	border-radius: 20px;
 	color: var(--active);
 }
+
+summary:hover,
+summary:active,
+details[open] > summary {
+	font-weight: bold;
+}
+
+summary::after {
+	content: " (expand)";
+	opacity: 50%;
+	font-size: smaller;
+	font-weight: lighter;
+}
+
+details[open] > summary::after {
+	content: " (collapse)";
+}
+
 
 a:active {
 	color: var(--active);
@@ -264,7 +282,7 @@ td:nth-child(2) {
 
 .slider:before {
   	border-radius: 20px;
-  	background-color: #fff;
+	background-color: #181818;
   	bottom: 3px;
   	content: "";
   	height: 24px;
@@ -273,9 +291,9 @@ td:nth-child(2) {
   	transition: .4s;
   	width: 24px;
 }
-
+  	
 input:checked + .slider:before {
-	background-color: #181818;
+	background-color: #fff;
   	left: 30px;
 }
 .line-clamp {
