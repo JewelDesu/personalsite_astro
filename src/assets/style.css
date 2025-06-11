@@ -221,7 +221,13 @@ td:nth-child(2) {
 		padding: 0;
 	}
 }
-
+@media only screen and (max-width: 600px) {
+#top-grid {
+    display: flex;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 2px;
+}
+}
 
 .fixed 
 .status-menu:after{
