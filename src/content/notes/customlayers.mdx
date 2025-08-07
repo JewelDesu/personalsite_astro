@@ -1,0 +1,90 @@
+---
+title: "Custom yocto layer guide "
+description: "Guide on creating your own custom yocto layer"
+---
+
+# Yocto layer creation
+
+Guide on creating your own custom yocto layer
+
+**Refferences:**  
+[yoctoproject](https://docs.yoctoproject.org/next/dev-manual/layers.html)   
+[back to home](./notes) 
+
+---
+
+## Simple yocto layers follow this file structure:
+
+```bash
+⊢meta-layer     
+ ͏  ͏ ⊢conf   
+ ͏  ͏  ͏ ⊢layer.conf   
+ ͏  ͏ ⊢recipes-layer  
+ ͏  ͏  ͏ ͏  ⊢application    
+ ͏  ͏  ͏  ͏  ͏ ͏   ͏⊢files    
+ ͏  ͏  ͏  ͏  ͏  ͏  ͏  ͏  ͏⊢applicationbinary  
+ ͏  ͏  ͏  ͏  ͏ ͏   ͏⊢application_0.1.bb 
+```
+
+Lets go folder by folder.   
+    
+Main folder ``meta-layer`` can be called whatever and it will contain folders for recipes, layer config, and other misc files.
+
+``conf`` contains configs that define recipes of the layer and much more.
+
+``recipes-layer`` contains main recipe file folder and a .bb file which has all the instructions for bitbake to perform during recipe baking process.
+
+``recipes-layer/files`` is a folder that contains certain recipe files (application, scripts, configs, etc) that will be included during build process, keep in mind source code could also be included with compilation process during baking, but i wont go into detail here.
+
+---
+
+## Config example
+
+```
+BBPATH .= ":${LAYERDIR}"
+BBFILES += "${LAYERDIR}/recipes-*/*/*.bb \
+            ${LAYERDIR}/recipes-*/*/*.bbappend"
+
+BBFILE_COLLECTIONS += "meta-apps"
+BBFILE_PATTERN_meta-apps = "^${LAYERDIR}/"
+BBFILE_PRIORITY_meta-apps = "6"
+
+LAYERSERIES_COMPAT_meta-apps = "scarthgap"
+```
+
+This is an example of a simple configuration file which defines main folder and recipe folders, collection name, priority, and version compatibility.   
+The recipe file from the layer with a higher priority number takes precedence. Priority values also affect the order in which multiple ``.bbappend`` files for the same recipe are applied.
+
+---
+
+## Recipe example
+
+```
+SUMMARY = "NWT4 Qt Application"
+LICENSE = "CLOSED"
+SRC_URI = "file://NWT4 \
+           file://nwt4.desktop \
+           file://nwt4.sh"
+
+S = "${WORKDIR}"
+
+# Install files
+do_install() {
+    install -d ${D}${bindir}
+    install -m 0755 ${WORKDIR}/NWT4 ${D}${bindir}/NWT4
+
+    install -d ${D}${datadir}/applications
+    install -m 0644 ${WORKDIR}/nwt4.desktop ${D}${datadir}/applications/nwt4.desktop
+
+    install -d ${D}${datadir}/${PN}
+    install -m 0755 ${WORKDIR}/nwt4.sh ${D}${datadir}/${PN}
+}
+
+# Ensure weston user can execute it
+#FILES:${PN} += "${bindir}/NWT4 ${datadir}/applications/nwt4.desktop"
+```
+
+Simple recipe example that takes already compiled application and includes it in the final linux image.     
+``do_install()`` function contains main instructions for bitbake to perform, in this example bitbake is taking the files from main "files" folder and relocating them in certain location in the image  
+
+For better understanding of directory and instalation variables check out [koan wiki page](https://wiki.koansoftware.com/index.php/Directories_and_installation_variables)  

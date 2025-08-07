@@ -1,0 +1,185 @@
+---
+title: "STM32MPx board embedded linux quick start refference "
+description: "Quick step by step guide for setting up bitbake and including OpenEmbedded layers or your custom layer"
+---
+
+# STM distribution environment instalation
+
+Quick step by step guide for setting up bitbake and including OpenEmbedded layers or your custom layer
+
+**Refferences:**  
+[wiki.st](https://wiki.st.com/stm32mpu/wiki/STM32MPU_Distribution_Package)  
+[koansoftware](https://koansoftware.com/howto-use-yocto-project-with-the-stm32mp1-embedded-systems/)    
+[back to home](./notes)
+
+---
+
+Guide for setting up SMT sdk with qt for compilations.
+
+Follow it step by step.
+0. Prerequisites:
+1. REPO:
+2. BitBake preparation:
+3. Initializing the OpenEmbedded build environment:
+4. Configuring bitbake to include WebBrowser:
+
+---
+
+## 0. Prerequisites:
+
+```bash
+Host:~/$ sudo apt install gawk wget git diffstat unzip texinfo gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1-mesa libsdl1.2-dev python3-subunit mesa-common-dev zstd liblz4-tool file locales
+
+
+Host:~/$ sudo apt install curl ssh tree meld geany make xsltproc docbook-utils fop dblatex xmlto
+
+
+Host:~/$ sudo apt install bsdmainutils build-essential chrpath cpio debianutils diffstat gawk gcc-multilib git iputils-ping libegl1-mesa libgmp-dev libmpc-dev libsdl1.2-dev libssl-dev lz4 pylint python3 python3-git python3-jinja2 python3-pexpect python3-pip socat texinfo unzip wget xterm xz-utils zstd
+```
+
+---
+
+## 1. REPO:
+
+```bash
+Host:~/$ mkdir -p ~/.bin
+
+Host:~/$ PATH="${HOME}/.bin:${PATH}"
+
+Host:~/$ curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
+
+Host:~/$ chmod a+rx ~/.bin/repo
+```
+---
+
+## 2. BitBake preparation:
+
+
+Initialize repo in the current directory:
+LATEST VERSION (for a specific version check: https://wiki.st.com/stm32mpu/wiki/Category:Release_notes_archives)
+
+```bash
+Host:~/$ mkdir stm
+
+Host:~/$ cd stm
+
+Host:~/stm$ repo init -u https://github.com/STMicroelectronics/oe-manifest.git -b refs/tags/openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11
+```
+
+Will promt to enter name, email, just press enter on all promts.
+```bash
+Host:~/stm$ repo sync
+```
+---
+
+## 3. Initializing the OpenEmbedded build environment:
+
+```bash
+Host:~/stm$ DISTRO=openstlinux-weston MACHINE=stm32mp1 source layers/meta-st/scripts/envsetup.sh
+```
+
+MACHINE= Name will change depending on the board youre building for, more information on: https://wiki.st.com/stm32mpu/wiki/OpenSTLinux_distribution 
+
+You will be asked to read and to accept this EULA. Press left arrow and enter to accept.
+
+Youre ready to bitbake simple image or include more tools (STEP 4).
+
+
+---
+
+### Building the OpenSTLinux distribution:
+
+```bash
+Host:~/stm/build-openstlinuxweston-stm32mp1$ bitbake st-image-weston
+```
+
+
+---
+
+## 4. Configuring bitbake to include cog ( WPE launcher and webapp container ):
+
+```bash
+Host:~/stm/build-openstlinuxweston-stm32mp1$ cd ../layers
+```
+
+Including external layers:
+
+```bash
+Host:~/stm/layers$ git clone https://github.com/Igalia/meta-webkit.git
+
+Host:~/stm/layers$ git clone https://github.com/meta-qt5/meta-qt5
+
+Host:~/stm/layers$ cd meta-qt-5
+
+Host:~/stm/layers$ git checkout scarthgap
+
+
+Host:~/stm/layers$ cd ../../build-openstlinuxweston-stm32mp1/
+
+Host:~/stm/build-openstlinuxweston-stm32mp1$ bitbake-layers add-layer ../layers/meta-webkit/
+
+Host:~/stm/build-openstlinuxweston-stm32mp1$ bitbake-layers add-layer ../layers/meta-qt5
+```
+
+Local config editing:
+
+```bash
+cat >> conf/local.conf <<EOF
+
+IMAGE_ROOTFS_MAXSIZE = "3048576"
+
+IMAGE_INSTALL:append = " mesa libegl wpewebkit cog weston weston-init"
+
+PREFERRED_PROVIDER_virtual/wpebackend = "wpebackend-fdo"
+
+DISTRO_FEATURES:append = " opengl wayland pam"
+
+EOF
+
+```
+
+---
+
+
+## Building and flashing the OpenSTLinux distribution:
+
+```bash
+Host:~/stm/build-openstlinuxweston-stm32mp1$ bitbake st-image-weston
+```
+
+After successfully building the image it is ready to be flashed.
+
+All files required for flashing are located : ~/stm/build-openstlinuxweston-stm32mp1/tmp-glibc/deploy/images/stm32mp1
+
+Flash and enjoy your own built build
+
+---
+
+## Including your own layer
+
+In my instance i will be using my personal layer with precompiled applications [meta-apps](https://github.com/JewelDesu/meta-apps)
+
+More information on how to make your own layer: [Layers](./customlayers)
+
+```bash
+Host:~/$ cd ~/stm/layers
+
+Host:~/stm/layers$ git clone https://github.com/JewelDesu/meta-apps
+
+Host:~/stm/layers$ cd ../../build-openstlinuxweston-stm32mp1/
+
+Host:~/stm/build-openstlinuxweston-stm32mp1$ bitbake-layers add-layer ../layers/meta-apps/
+```
+
+To include my custom applications local config must be edited, contents of it might change depending on your configuration.
+
+
+custom application recipe names need to be included in ``IMAGE_INSTALL:append``
+
+``IMAGE_INSTALL:append = " mesa libegl wpewebkit cog weston weston-init nwt4 qt-wpe-browser"``
+
+With the local config changed the new image can be baked and new applications will be installed
+
+```bash
+Host:~/stm/build-openstlinuxweston-stm32mp1$ bitbake st-image-weston
+```

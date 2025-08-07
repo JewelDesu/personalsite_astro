@@ -1,0 +1,275 @@
+---
+title: "STM32MPx board developer package set up and qt integration "
+description: "Quick step by step guide for setting up developer package specifically for STM32MPx board application compiling"
+---
+
+# STM developer environment instalation
+
+Quick step by step guide for setting up developer package specifically for STM32MPx board application compiling
+
+**Refferences:**  
+[wiki.st](https://wiki.st.com/stm32mpu/wiki/STM32MPU_Developer_Package#Developer_Package_step-by-step_overview)     
+[back to home](./notes)
+
+---
+
+Guide for setting up SMT sdk with qt for compilations.
+
+Follow it step by step.
+1. SDK instalation
+2. QT SDK instalation
+3. COMPILING QT5/6 APPLICATIONS
+4. Running applications inside the board
+
+---
+
+## 1. SDK instalation:
+
+In this guide im installing latest version 6.1.0 stm32mp1 SDK.
+
+For more specific board and SDK version visit: https://www.st.com/en/embedded-software/stm32mp1dev.html#get-software
+
+```bash
+Host:~/$ mkdir stmcomp
+
+Host:~/$ cd Downloads
+
+Host:~/Downloads$ tar xvf en.SDK-x86_64-stm32mp1-openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11.tar.gz -C ~/stmcomp
+
+Host:~/Downloads$ cd ~/stmcomp
+
+Host:~/stmcomp$ chmod +x stm32mp1-openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11/sdk/st-image-weston-openstlinux-weston-stm32mp1.rootfs-x86_64-toolchain-5.0.8-openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11.sh
+```
+Run the instalation script
+```bash
+Host:~/stmcomp$ ./stm32mp1-openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11/sdk/st-image-weston-openstlinux-weston-stm32mp1.rootfs-x86_64-toolchain-5.0.8-openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11.sh -d /Developer-Package/SDK
+```
+
+A successful installation outputs the following log:
+```bash
+ST OpenSTLinux - Weston - (A Yocto Project Based Distro) SDK installer version 5.0.8-openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11
+===================================================================================================================================
+You are about to install the SDK to "<working directory absolute path>/Developer-Package/SDK". Proceed [Y/n]? 
+Extracting
+SDK..........................................................................................................done
+Setting it up...done
+SDK has been successfully set up and is ready to be used.
+Each time you wish to use the SDK in a new shell session, you need to source the environment setup script e.g.
+$ . <working directory absolute path>/Developer-Package/SDK/environment-setup-cortexa7t2hf-neon-vfpv4-ostl-linux-gnueabi
+```
+---
+## SOURCE SDK:
+```bash
+Host:~/stmcomp$ source /Developer-Package/SDK/environment-setup-cortexa7t2hf-neon-vfpv4-ostl-linux-gnueabi
+```
+
+If all done correctly:
+```bash
+Host:~/stmcomp$ echo $ARCH
+```
+
+has to return
+
+``
+arm
+``
+
+---
+### Simple gcc compilations can be performed now
+---
+
+## 2. QT SDK instalation:
+
+Download QT sdk at: https://www.st.com/en/embedded-software/x-linux-qt.html#get-software
+
+```bash
+Host:~/$ mkdir ~/stmcomp/QT
+
+Host:~/$ cd Downloads
+
+Host:~/Downloads$ tar xvf en.en.SDK-x86_64-stm32mp2-openstlinux-6.6-yocto-scarthgap-mpu-v24.11.06-x-linux-qt-v2.1.0.tar.gz -C ~/stmcomp/QT
+
+Host:~/Downloads$ cd ~/stmcomp
+
+Host:~/stmcomp$ chmod +x /QT/stm32mp2-openstlinux-6.6-yocto-scarthgap-mpu-v24.11.06-x-linux-qt-v2.1.0/sdk/st-image-qt-openstlinux-weston-stm32mp2.rootfs-x86_64-toolchain-5.0.3-openstlinux-6.6-yocto-scarthgap-mpu-v24.11.06-addon-x-linux-qt-v2.1.0.sh
+```
+
+### TO INSTALL QT SDK TOOLS FIRST THE PRIMARY SDK HAS TO BE SOURCED
+```bash
+Host:~/stmcomp$ source /Developer-Package/SDK/environment-setup-cortexa7t2hf-neon-vfpv4-ostl-linux-gnueabi
+```
+If all done correctly:
+```bash
+Host:~/stmcomp$ echo $ARCH
+```
+has to return
+
+``
+arm
+``
+
+Go to the absolute path to the directory in which is installed the developer package:
+```bash
+Host:~/stmcomp$ cd /Developer-Package/SDK
+```
+### RUN QT SDK INSTALATION SCRIPT:
+```bash
+Host:~/stmcomp$ ~/stmcomp/QT/stm32mp2-openstlinux-6.6-yocto-scarthgap-mpu-v24.11.06-x-linux-qt-v2.1.0/sdk/st-image-qt-openstlinux-weston-stm32mp2.rootfs-x86_64-toolchain-5.0.3-openstlinux-6.6-yocto-scarthgap-mpu-v24.11.06-addon-x-linux-qt-v2.1.0.sh
+```
+
+A successful installation outputs the following log:
+```bash
+===============================================================================================================================================
+ST OpenSTLinux - Weston - (A Yocto Project Based Distro) SDK installer version 5.0.3-openstlinux-6.6-yocto-scarthgap-mpu-v24.11.06 - X-LINUX-QT version 2.1.0 SDK-Addon installer
+===============================================================================================================================================
+Extracting X-LINUX-QT-Addon SDK................................................................................................Done.
+Setting it up... Done.
+Do you want to configure the Qt Creator for this SDK [y/n]? n
+Qt Creator configuration will be ignored.
+X-LINUX-QT-Addon SDK has been successfully set up and is ready to be used.
+```
+
+To make sure qt is correctly installed:
+```bash
+Host:~/stm$ which qmake
+/home/Host/stm/Developer-Package/SDK/sysroots/x86_64-ostl_sdk-linux/usr/bin/qmake
+```
+which qmake - has to return the absolute path of qmake that is in the SDK,
+
+NOT /usr/bin/qmake
+
+
+---
+
+
+## 3. COMPILING QT5/6 APPLICATIONS
+
+
+SOURCE THE SDK
+```bash
+Host:~/stmcomp$ source /Developer-Package/SDK/environment-setup-cortexa7t2hf-neon-vfpv4-ostl-linux-gnueabi
+```
+Export the OE_CMAKE_TOOLCHAIN_FILE variable
+```bash
+Host:~/stmcomp$ export OE_CMAKE_TOOLCHAIN_FILE="$OECORE_NATIVE_SYSROOT/usr/lib/cmake/Qt6/qt.toolchain.cmake"
+
+Host:~/stmcomp$ mkdir projects
+
+Host:~/stmcomp$ cd projects
+```
+
+### EXAMPLE APPLICATION COMPILATION:
+```bash
+
+Host:~/stmcomp/projects$ git clone https://github.com/KDABLabs/KDBoatDemo.git -b qt6
+
+Host:~/stmcomp/projects$ cd KDBoatDemo
+
+Host:~/stmcomp/projects/KDBoatDemo$ cmake -S . -B config_default
+```
+returned output:
+```bash
+-- Toolchain file defaulted to '/opt/st/stm32mp2/4.2.4-openstlinux-6.1-yocto-mickledore-mpu-v24.06.26_x-linux-qt_v2.0.0/sysroots/x86_64-ostl_sdk-linux/usr/lib/cmake/Qt6/qt.toolchain.cmake'
+-- The C compiler identification is GNU 12.3.0
+-- The CXX compiler identification is GNU 12.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /opt/st/stm32mp2/4.2.4-openstlinux-6.1-yocto-mickledore-mpu-v24.06.26_x-linux-qt_v2.0.0/sysroots/x86_64-ostl_sdk-linux/usr/bin/aarch64-ostl-linux/aarch64-ostl-linux-gcc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /opt/st/stm32mp2/4.2.4-openstlinux-6.1-yocto-mickledore-mpu-v24.06.26_x-linux-qt_v2.0.0/sysroots/x86_64-ostl_sdk-linux/usr/bin/aarch64-ostl-linux/aarch64-ostl-linux-g++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Performing Test HAVE_STDATOMIC
+-- Performing Test HAVE_STDATOMIC - Success
+-- Found WrapAtomic: TRUE  
+-- Performing Test HAVE_EGL
+-- Performing Test HAVE_EGL - Success
+-- Found EGL: /opt/st/stm32mp2/4.2.4-openstlinux-6.1-yocto-mickledore-mpu-v24.06.26_x-linux-qt_v2.0.0/sysroots/cortexa35-ostl-linux/usr/include (found version "1.5") 
+-- Performing Test HAVE_GLESv2
+-- Performing Test HAVE_GLESv2 - Success
+-- Found GLESv2: /opt/st/stm32mp2/4.2.4-openstlinux-6.1-yocto-mickledore-mpu-v24.06.26_x-linux-qt_v2.0.0/sysroots/cortexa35-ostl-linux/usr/include  
+-- Found XKB: /opt/st/stm32mp2/4.2.4-openstlinux-6.1-yocto-mickledore-mpu-v24.06.26_x-linux-qt_v2.0.0/sysroots/cortexa35-ostl-linux/usr/lib/libxkbcommon.so (found suitable version "1.5.0", minimum required is "0.5.0") 
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR) 
+-- Could NOT find WrapVulkanHeaders (missing: Vulkan_INCLUDE_DIR) 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /opt/st/demos/Qt/KDBoatDemo/config_default
+```
+```bash
+Host:~/stm/projects/KDBoatDemo$ cmake --build config_default --target all
+```
+returned output:
+```bash
+[  7%] Running qmlimportscanner for KDABBoatDemo
+[  7%] Built target KDABBoatDemo_qmlimportscan
+[ 15%] Automatic MOC for target KDABBoatDemo
+[ 15%] Built target KDABBoatDemo_autogen
+[ 23%] Automatic RCC for imagesMaps2.qrc
+[ 30%] Automatic RCC for data.qrc
+[ 38%] Automatic RCC for images.qrc
+[ 46%] Automatic RCC for imagesMaps.qrc
+[ 53%] Building CXX object CMakeFiles/KDABBoatDemo.dir/KDABBoatDemo_autogen/mocs_compilation.cpp.o
+[ 61%] Building CXX object CMakeFiles/KDABBoatDemo.dir/main.cpp.o
+[ 69%] Building CXX object CMakeFiles/KDABBoatDemo.dir/KDABBoatDemo_autogen/EWIEGA46WW/qrc_imagesMaps.cpp.o
+[ 76%] Building CXX object CMakeFiles/KDABBoatDemo.dir/KDABBoatDemo_autogen/EWIEGA46WW/qrc_imagesMaps2.cpp.o
+[ 84%] Building CXX object CMakeFiles/KDABBoatDemo.dir/KDABBoatDemo_autogen/EWIEGA46WW/qrc_images.cpp.o
+[ 92%] Building CXX object CMakeFiles/KDABBoatDemo.dir/KDABBoatDemo_autogen/EWIEGA46WW/qrc_data.cpp.o
+[100%] Linking CXX executable KDABBoatDemo
+[100%] Built target KDABBoatDemo
+
+```
+### Compilation is done, copy the binary to STM32MP board :
+```bash
+Host:~/stmcomp/projects/KDBoatDemo$ scp config_default/KDABBoatDemo root@192.168.0.1xx:/home/root/.
+```
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## Running QT applications inside the board:
+
+### CURRENTLY X-LINUX-QT IN ONLY AVAILABLE ON ecosystem release v6.0.0, if guide below does not work that means the ecosystem is not correct.
+
+Board configuration guide:
+```bash
+BOARD:~/$ date +%y%m%d -s "20250701"
+
+BOARD:~/$ date +%T -s "00:00:00"
+```
+For STM32MP1 series' boards:
+
+### with GPU support (STM32MP157F-DK2 Discovery kit More info green.png), add this Qt™ package Debian path:
+```bash
+BOARD:~/$ echo "deb http://extra.packages.openstlinux.st.com/QTMP1GPU/6.0 scarthgap main" > /etc/apt/sources.list.d/extra.qt.packages.openstlinux.st.com.list
+```
+### without GPU support (STM32MP135F-DK Discovery kit More info green.png), add this Qt package Debian path:
+```bash
+BOARD:~/$ echo "deb http://extra.packages.openstlinux.st.com/QTMP1CPU/6.0 scarthgap main" > /etc/apt/sources.list.d/extra.qt.packages.openstlinux.st.com.list
+```
+Refresh the apt database and install qt package:
+
+```bash
+BOARD:~/$ apt-get update
+
+BOARD:~/$ apt install -y packagegroup-x-linux-qt 
+
+BOARD:~/$ apt-get install -y demo-launcher
+
+BOARD:~/$ systemctl restart weston-graphical-session.service
+```
+After the board reboots run the compiled example application
+
+```bash
+BOARD:~/$ chmod +x KDABBoatDemo
+
+BOARD:~/$ ./KDABBoatDemo
+```
+
+
+END OF GUIDE
